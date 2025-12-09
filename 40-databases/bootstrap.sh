@@ -24,7 +24,7 @@ if [ -d $ANSIBLE_DIR ]; then
 else
     git clone $REPO_URL
     cd $ANSIBLE_DIR
-if
+fi
 
 ansible-playbook -e component=$component main.yaml
 
