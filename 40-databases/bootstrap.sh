@@ -1,22 +1,27 @@
 #!/bin/bash
 
-component=$1      # mongodb / redis / rabbitmq
-environment=$2    # dev / prod
-
+component=$1
+environment=$2
 dnf install ansible -y
+#ansible-pull -U https://github.com/daws-86s/ansible-roboshop-roles-tf.git -e component=$component main.yaml
+# git clone ansible-playbook
+# cd ansible-playbook
+# ansible-playbook -i inventory main.yaml
 
-REPO_URL=https://github.com/lavanyak-hub/ansible-roboshop-roles-tf.git
+REPO_URL=https://github.com/daws-86s/ansible-roboshop-roles-tf.git
 REPO_DIR=/opt/roboshop/ansible
 ANSIBLE_DIR=ansible-roboshop-roles-tf
 
 mkdir -p $REPO_DIR
 mkdir -p /var/log/roboshop/
-touch /var/log/roboshop/ansible.log
+touch ansible.log
 
 cd $REPO_DIR
 
-# Check if repo already exists
+# check if ansible repo is already cloned or not
+
 if [ -d $ANSIBLE_DIR ]; then
+
     cd $ANSIBLE_DIR
     git pull
 else
@@ -24,6 +29,5 @@ else
     cd $ANSIBLE_DIR
 fi
 
-# CORRECT ansible-playbook syntax
-ansible-playbook -e "component=$component environment=$environment" main.yaml
+ansible-playbook -e component=$component -e env=$environment main.yaml
 
