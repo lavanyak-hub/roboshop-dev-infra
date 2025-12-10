@@ -85,7 +85,7 @@ resource "terraform_data" "redis" {
     }
 
   provisioner "remote-exec" {
-  inline = [
+    inline = [
     "chmod +x /tmp/bootstrap.sh",
     "sudo sh /tmp/bootstrap.sh redis"
   ]
