@@ -22,8 +22,12 @@ variable "sg_names" {
     # backend ALB
     "backend_alb"
   ]
-
-
-  
 }
 
+variable "zone_id" {
+  default = "Z04936233JDYCWRJS57S7"
+}
+
+variable "domain_name" {
+  default = "rakesh12.fun"
+}
