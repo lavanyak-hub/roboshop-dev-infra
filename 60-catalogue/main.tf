@@ -156,7 +156,7 @@ resource "aws_autoscaling_group" "catalogue" {
   }
 
   timeouts {
-    delete = "15"
+    delete = "15m"
   }
 
 }
