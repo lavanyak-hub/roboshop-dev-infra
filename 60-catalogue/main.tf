@@ -90,6 +90,9 @@ resource "aws_launch_template" "catalogue" {
 
   vpc_security_group_ids = [local.catalogue_sg_id]
 
+# when we run terraform apply other time againa a new version will be created with new AMI ID 
+ update_default_version = true 
+
 # tags attached to the instance
 
   tag_specifications {
@@ -141,6 +144,15 @@ resource "aws_autoscaling_group" "catalogue" {
   vpc_zone_identifier       = local.private_subnet_ids
   target_group_arns = [aws_lb_target_group.catalogue.arn]
 
+
+instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50  # atleast 50% of the instanceshould be up and running
+    }
+    triggers = ["launch_template"]  
+  }
+
   dynamic "tag" {  # we will get iterator with name as tag
     for_each = merge(
       local.common_tags,
@@ -161,7 +173,7 @@ resource "aws_autoscaling_group" "catalogue" {
 
 }
 
-resource "aws_autoscaling_policy" "example" {
+resource "aws_autoscaling_policy" "catalogue" {
   autoscaling_group_name = aws_autoscaling_group.catalogue.name 
   name                   = "${local.common_name_suffix}-catalogue"
   policy_type            = "TargetTrackingScaling"
@@ -176,5 +188,32 @@ resource "aws_autoscaling_policy" "example" {
   }
 }
 
+resource "aws_lb_listener_rule" "catalogue" {
+  listener_arn = local.backend_alb_listener_arn
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.catalogue.arn
+  }
+
+  condition {
+    host_header {
+      values = ["catalogue.backend-alb-${var.var.environment}.${var.domain_name}"]
+    }
+  }
+}
+
+resource "terraform_data" "catalogue_local" {
+  triggers_replace = [
+    aws_instance.catalogue.id
+  ]
+  
+  depends_on = [ aws_autoscaling_policy.catalogue ]
+ 
+  provisioner "local-exec" {
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}"
+  }
+}
 
 
