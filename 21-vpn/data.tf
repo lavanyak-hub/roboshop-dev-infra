@@ -1,10 +1,10 @@
-data "aws_ami" "joindevops" {
-    owners           = ["973714476881"]
+data "aws_ami" "openvpn" {
+    owners           = ["973714476881"]  # need to give the openvpn Account id
     most_recent      = true
     
     filter {
         name   = "name"
-        values = ["RHEL-9-DevOps-Practice"]
+        values = [""]  # need to vive openvpn (AMI name)
     }
 
     filter {

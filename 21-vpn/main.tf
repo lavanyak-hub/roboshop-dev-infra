@@ -13,4 +13,11 @@ resource "aws_instance" "openvpn" {
     )
 }
 
-
+resource "aws_route53_record" "openvpn" {
+  zone_id = var.zone_id
+  name    = "openvpn-${var.domain_name}"  # mysqlopenvpn.rakesh12.fun 
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.openvpn.public_ip]
+  allow_overwrite = true
+}
