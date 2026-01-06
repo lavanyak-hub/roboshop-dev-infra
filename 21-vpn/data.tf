@@ -4,7 +4,7 @@ data "aws_ami" "openvpn" {
     
     filter {
         name   = "name"
-        values = [""]  # need to vive openvpn (AMI name)
+        values = [""]  # need to give openvpn (AMI name)
     }
 
     filter {
@@ -18,8 +18,8 @@ data "aws_ami" "openvpn" {
     }
 }
 
-data "aws_ssm_parameter" "openvpn_sg_id" {
-  name = "/${var.project_name}/${var.environment}/openvpn_sg_id"
+data "aws_ssm_parameter" "open_vpn_sg_id" {
+  name = "/${var.project_name}/${var.environment}/open_vpn_sg_id"
 }
 
 data "aws_ssm_parameter" "public_subnet_ids" {
