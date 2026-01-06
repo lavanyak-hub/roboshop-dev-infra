@@ -192,6 +192,15 @@ resource "aws_security_group_rule" "payment_backend_alb" {
   to_port           = 8080
 }
 
+resource "aws_security_group_rule" "payment_shipping" {
+  type = "ingress"
+  security_group_id = local.payment_sg_id
+  source_security_group_id = local.shipping_sg_id
+  from_port         = 8080
+  protocol          = "tcp"
+  to_port           = 8080
+}
+
 ### Backend ALB SG Rules ###
 resource "aws_security_group_rule" "backend_alb_bastion" {
   type = "ingress"
@@ -271,6 +280,15 @@ resource "aws_security_group_rule" "frontend_alb_public" {
 resource "aws_security_group_rule" "bastion_laptop" {
   type = "ingress"
   security_group_id = local.bastion_sg_id
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port         = 22
+  protocol          = "tcp"
+  to_port           = 22
+}
+
+resource "aws_security_group_rule" "open_vpn_public" {
+  type = "ingress"
+  security_group_id = local.open_vpn_sg_id
   cidr_blocks = ["0.0.0.0/0"]
   from_port         = 22
   protocol          = "tcp"
